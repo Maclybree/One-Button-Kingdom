@@ -39,11 +39,11 @@ box-shadow:0 0 40px #22d3ee55, inset 0 -10px 20px #0003;transition:transform .08
 <script type="module">
 import { createClient } from '@supabase/supabase-js'
 
-// === 1. PASTE YOUR KEYS HERE ===
+// === 1. YOUR KEYS ===
 const SUPABASE_URL = 'https://uomhjauwrnwpvwmqmgld.supabase.co'
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbWhqYXV3cm53cHZ3bXFtZ2xkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5MTg4MjMsImV4cCI6MjA5ODQ5NDgyM30.q1ELWvbL_FBxIjR7um_c24HgKAWMFkMQDgs0aShtRNo'
 const supa = createClient(SUPABASE_URL, SUPABASE_ANON)
-// =================================
+// ====================
 
 const tag = localStorage.obk_tag || crypto.randomUUID().slice(0,4).toUpperCase()
 localStorage.obk_tag = tag
@@ -89,19 +89,19 @@ async function tap(){
   if(tokens <= 0) return flashEvent('NO TOKENS')
   
   btn.disabled = true
-  setTimeout(()=>btn.disabled=false, 180) // throttle client side
+  setTimeout(()=>btn.disabled=false, 180)
 
-  // Revenge: if you tap within 2s of someone else, spend token to lock them
+  // Revenge: lock the last person if you tap fast
   if(now - lastTapTime < 2000 && lastTapBy && lastTapBy !== tag && tokens > 0){
     tokens--
     regenAt = Date.now() + 10000
-    await supa.rpc('lock_player', {target: lastTapBy})
+    await supa.rpc('obk_lock_player', {target: lastTapBy})
   }
 
   score++
   lastTapBy = tag
   lastTapTime = now
-  await supa.rpc('increment_click', {player_tag: tag})
+  await supa.rpc('obk_increment_click', {player_tag: tag})
   render()
 }
 btn.onclick = tap
@@ -116,21 +116,18 @@ function applyEvent(name){
   if(name==='GOLD') score += 100
   if(name==='TAX') score = Math.floor(score*0.8)
   if(name==='RESET') score = 0
-  if(name==='SWAP'){
-    // client-side swap with random last5 score if we had it. Server handles real swap.
-    score = Math.floor(Math.random()*500)
-  }
+  if(name==='SWAP') score = Math.floor(Math.random()*500)
   flashEvent(name)
   render()
 }
 
 function updateFeed(arr){
-  feedEl.innerHTML = '<b>Last 5 Clickers</b>' + arr.map(t=>`<div>${t}</div>`).join('')
+  feedEl.innerHTML = '<b>Last 5 Clickers</b>' + (arr||[]).map(t=>`<div>${t}</div>`).join('')
 }
 
-// Realtime
+// Realtime -> now listening to obk_global_state
 supa.channel('obk')
-.on('postgres_changes',{event:'UPDATE',schema:'public',table:'global_state'},p=>{
+.on('postgres_changes',{event:'UPDATE',schema:'public',table:'obk_global_state'},p=>{
   const s = p.new
   global = s.clicks
   if(s.last_event && s.last_event_time > Date.now()-3500) applyEvent(s.last_event)
