@@ -3,54 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>One Button Kingdom</title>
+<title>TapDoom - Click or Die</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💀</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fredoka:wght@600;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a0f1a;--card:#111827;--accent:#22d3ee;--warn:#fbbf24;--text:#e5e7eb}
+:root{
+  --bg:#070000;           /* black red */
+  --card:#1a0a0a;
+  --accent:#ff1e1e;       /* blood */
+  --warn:#ffd166;         
+  --text:#f2e6e6;
+  --title: 'Creepster', cursive; 
+  --ui: 'Fredoka', sans-serif;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:ui-monospace, SFMono-Regular, monospace;
-display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;gap:10px;user-select:none;padding:12px;transition:background .3s}
-#tag{background:var(--card);padding:6px 10px;border-radius:8px;font-size:12px;color:#a5b4fc}
-#score{font-size:38px;font-weight:800;color:var(--accent)}
-#global{font-size:13px;opacity:.8}
-#event{font-size:18px;height:24px;color:var(--warn);font-weight:700;text-align:center}
-#btn{width:160px;height:160px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#67e8f9,#1e40af);
-border:4px solid var(--accent);color:var(--bg);font-size:20px;font-weight:900;cursor:pointer;
-box-shadow:0 0 40px #22d3ee55, inset 0 -10px 20px #0003;transition:transform .08s}
-#btn:active{transform:scale(.92)}
-#btn:disabled{opacity:.35;cursor:not-allowed;filter:grayscale(1)}
-.row{display:flex;gap:12px;width:min(720px,95vw);flex-wrap:wrap;justify-content:center}
-.panel{background:var(--card);padding:10px;border-radius:10px;font-size:11px}
+body{
+  margin:0;background:var(--bg);color:var(--text);font-family:var(--ui);
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  min-height:100vh;gap:8px;user-select:none;padding:12px;transition:background .2s;
+  background-image:radial-gradient(#ff000010 1px, transparent 1px);
+  background-size:20px 20px;
+}
+#brand{font-family:var(--title);font-size:32px;color:var(--accent);letter-spacing:2px;text-shadow:0 0 10px #ff0000aa}
+#tag{background:var(--card);padding:5px 9px;border-radius:6px;font-size:11px;color:#ff9b9b}
+#score{font-size:36px;font-weight:800;color:var(--accent)}
+#global{font-size:12px;opacity:.8}
+#event{font-size:18px;height:24px;color:var(--warn);font-weight:900;text-align:center;text-shadow:0 0 8px #ffd166}
+#btn{
+  width:170px;height:170px;border-radius:40% 60% 70% 30% / 40% 50% 60% 50%;
+  background:radial-gradient(circle at 30% 30%,#ff5555,#660000);
+  border:4px solid var(--accent);color:#fff;font-size:26px;font-weight:900;cursor:pointer;
+  box-shadow:0 0 50px #ff000088, inset 0 -12px 20px #0008;transition:transform .08s;
+  font-family:var(--title);letter-spacing:1px;
+}
+#btn:active{transform:scale(.9) rotate(-2deg)}
+#btn:disabled{opacity:.3;cursor:not-allowed;filter:grayscale(.6)}
+.row{display:flex;gap:10px;width:min(720px,95vw);flex-wrap:wrap;justify-content:center}
+.panel{background:var(--card);padding:9px;border-radius:8px;font-size:11px;border:1px solid #ff000033}
 #feed{width:260px;min-height:120px}
 #chat{width:260px;display:flex;flex-direction:column;gap:6px}
-#chatlog{height:140px;overflow:auto;background:#0b1220;border-radius:6px;padding:6px;font-size:11px}
-#chat input{width:100%;background:#0b1220;border:1px solid #1f2937;color:var(--text);border-radius:6px;padding:6px;font-size:11px}
+#chatlog{height:140px;overflow:auto;background:#0a0000;border-radius:6px;padding:6px;font-size:11px;border:1px solid #ff000022}
+#chat input{
+  width:100%;background:#0a0000;border:1px solid #ff000055;color:var(--text);
+  border-radius:6px;padding:6px;font-size:11px;font-family:var(--ui)
+}
 .tokens{font-size:12px;color:var(--warn)}
-.pulse{animation:pulse .4s}
-@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+.pulse{animation:pulse .3s}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.1) rotate(2deg)}100%{transform:scale(1)}}
+.shake{animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 
-/* Event themes */
-body.dragon{background:#2b0000 !important}
-body.gold{background:#2b2600 !important}
-body.tax{background:#1a1a1a !important}
+/* Event themes = cursed */
+body.dragon{background:#2b0000 !important;filter:sepia(1) hue-rotate(-10deg)}
+body.gold{background:#2b2200 !important}
+body.tax{background:#111 !important;filter:grayscale(1)}
 body.reset{background:#000 !important}
-body.swap{background:linear-gradient(45deg,#2b002b,#002b2b) !important}
+body.swap{background:repeating-linear-gradient(45deg,#2b002b,#2b002b 10px,#002b2b 10px,#002b2b 20px) !important}
 </style>
 <script type="importmap">{"imports":{"@supabase/supabase-js":"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"}}</script>
 </head>
 <body>
-<div id="tag">You: ----</div>
-<div id="score">Score: 0</div>
-<div id="global">Global Clicks: 0</div>
+<div id="brand">💀 TAPDOOM</div>
+<div id="tag">Soul: ----</div>
+<div id="score">Blood: 0</div>
+<div id="global">Curses: 0</div>
 <div id="event"></div>
-<button id="btn">TAP</button>
-<div class="tokens">Lockouts: <span id="toks">3</span> | Regen: <span id="regen">10s</span></div>
+<button id="btn">CLICK</button>
+<div class="tokens">Curses: <span id="toks">3</span> | Cooldown: <span id="regen">10s</span></div>
 
 <div class="row">
-  <div class="panel" id="feed"><b>Last 5 Clickers</b></div>
+  <div class="panel" id="feed"><b>Last 5 Souls</b></div>
   <div class="panel" id="chat">
-    <b>Global Chat</b>
+    <b>Graveyard Chat</b>
     <div id="chatlog"></div>
-    <input id="chatin" maxlength="60" placeholder="Type + Enter">
+    <input id="chatin" maxlength="60" placeholder="Scream into the void...">
   </div>
 </div>
 
@@ -61,18 +87,18 @@ const SUPABASE_URL = 'https://uomhjauwrnwpvwmqmgld.supabase.co'
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbWhqYXV3cm53cHZ3bXFtZ2xkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5MTg4MjMsImV4cCI6MjA5ODQ5NDgyM30.q1ELWvbL_FBxIjR7um_c24HgKAWMFkMQDgs0aShtRNo'
 const supa = createClient(SUPABASE_URL, SUPABASE_ANON)
 
-const tag = localStorage.obk_tag || crypto.randomUUID().slice(0,4).toUpperCase()
-localStorage.obk_tag = tag
-document.getElementById('tag').textContent = 'You: ' + tag
+const tag = localStorage.td_tag || crypto.randomUUID().slice(0,4).toUpperCase()
+localStorage.td_tag = tag
+document.getElementById('tag').textContent = 'Soul: ' + tag
 
-let score = +localStorage.obk_score || 0
+let score = +localStorage.td_score || 0
 let global = 0
 let tokens = 3
 let lastTapBy = null
 let lastTapTime = 0
 let lockedUntil = 0
 let regenAt = Date.now() + 10000
-let lastChat = 0 // spam throttle
+let lastChat = 0
 
 const btn = document.getElementById('btn')
 const scoreEl = document.getElementById('score')
@@ -85,10 +111,10 @@ const chatlog = document.getElementById('chatlog')
 const chatin = document.getElementById('chatin')
 
 function render(){
-  scoreEl.textContent = 'Score: ' + score
-  globalEl.textContent = 'Global Clicks: ' + global
+  scoreEl.textContent = 'Blood: ' + score
+  globalEl.textContent = 'Curses: ' + global
   toksEl.textContent = tokens
-  localStorage.obk_score = score
+  localStorage.td_score = score
   btn.classList.add('pulse'); setTimeout(()=>btn.classList.remove('pulse'),200)
 }
 
@@ -104,8 +130,8 @@ setInterval(regenTick, 250)
 
 async function tap(){
   const now = Date.now()
-  if(now < lockedUntil) return flashEvent('LOCKED 3s')
-  if(tokens <= 0) return flashEvent('NO TOKENS')
+  if(now < lockedUntil) return flashEvent('CURSED 3s')
+  if(tokens <= 0) return flashEvent('NO CURSES')
   
   btn.disabled = true
   setTimeout(()=>btn.disabled=false, 180)
@@ -113,6 +139,7 @@ async function tap(){
   if(now - lastTapTime < 2000 && lastTapBy && lastTapBy !== tag && tokens > 0){
     tokens--
     regenAt = Date.now() + 10000
+    btn.classList.add('shake'); setTimeout(()=>btn.classList.remove('shake'),300)
     await supa.rpc('obk_lock_player', {target: lastTapBy})
   }
 
@@ -130,36 +157,34 @@ function flashEvent(txt){
 }
 
 function applyEvent(name){
-  document.body.className = name.toLowerCase() // theme swap
-  setTimeout(()=>document.body.className='', 3000) // reset after 3s
+  document.body.className = name.toLowerCase()
+  setTimeout(()=>document.body.className='', 3000)
   
   if(name==='DRAGON') score = Math.max(0, score-50)
   if(name==='GOLD') score += 100
   if(name==='TAX') score = Math.floor(score*0.8)
   if(name==='RESET') score = 0
   if(name==='SWAP') score = Math.floor(Math.random()*500)
-  flashEvent('EVENT: ' + name)
+  flashEvent('RITUAL: ' + name)
   render()
 }
 
 function updateFeed(arr){
-  feedEl.innerHTML = '<b>Last 5 Clickers</b>' + (arr||[]).map(t=>`<div>${t}</div>`).join('')
+  feedEl.innerHTML = '<b>Last 5 Souls</b>' + (arr||[]).map(t=>`<div>${t}</div>`).join('')
 }
 
 function addChat(tag, msg){
   const div = document.createElement('div')
-  div.innerHTML = `<b style="color:#a5b4fc">${tag}</b>: ${msg}`
+  div.innerHTML = `<b style="color:#ff9b9b">${tag}</b>: ${msg}`
   chatlog.appendChild(div)
   chatlog.scrollTop = chatlog.scrollHeight
-  // keep last 20
   while(chatlog.children.length > 20) chatlog.removeChild(chatlog.firstChild)
 }
 
-// Chat send
 chatin.onkeydown = async e=>{
   if(e.key==='Enter' && chatin.value.trim()){
     const now = Date.now()
-    if(now - lastChat < 800) return // 1.25 msg/sec max
+    if(now - lastChat < 800) return
     lastChat = now
     const msg = chatin.value.slice(0,60)
     chatin.value = ''
@@ -167,26 +192,23 @@ chatin.onkeydown = async e=>{
   }
 }
 
-// Realtime: game state
 supa.channel('obk_state')
 .on('postgres_changes',{event:'UPDATE',schema:'public',table:'obk_global_state'},p=>{
   const s = p.new
   global = s.clicks
   if(s.last_event && s.last_event_time > Date.now()-3500) applyEvent(s.last_event)
-  if(s.locked_tag === tag) lockedUntil = Date.now() + 3000
+  if(s.locked_tag === tag){lockedUntil = Date.now() + 3000; btn.classList.add('shake'); setTimeout(()=>btn.classList.remove('shake'),300)}
   updateFeed(s.last5 || [])
   render()
 })
 .subscribe()
 
-// Realtime: chat
 supa.channel('obk_chat')
 .on('postgres_changes',{event:'INSERT',schema:'public',table:'obk_chat'},p=>{
   addChat(p.new.tag, p.new.msg)
 })
 .subscribe()
 
-// Load last 20 chat on boot
 supa.from('obk_chat').select().order('id',{ascending:false}).limit(20).then(({data})=>{
   (data||[]).reverse().forEach(r=>addChat(r.tag, r.msg))
 })
