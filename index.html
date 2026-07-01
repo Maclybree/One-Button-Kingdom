@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Button Kingdom</title>
+<style>
+:root{--bg:#0a0f1a;--card:#111827;--accent:#22d3ee;--warn:#fbbf24;--text:#e5e7eb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:ui-monospace, SFMono-Regular, monospace;
+display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:14px;user-select:none}
+#tag{background:var(--card);padding:6px 10px;border-radius:8px;font-size:12px;color:#a5b4fc}
+#score{font-size:44px;font-weight:800;color:var(--accent)}
+#global{font-size:14px;opacity:.8}
+#event{font-size:18px;height:26px;color:var(--warn);font-weight:700;text-align:center}
+#btn{width:190px;height:190px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#67e8f9,#1e40af);
+border:4px solid var(--accent);color:var(--bg);font-size:22px;font-weight:900;cursor:pointer;
+box-shadow:0 0 40px #22d3ee55, inset 0 -10px 20px #0003;transition:transform .08s}
+#btn:active{transform:scale(.92)}
+#btn:disabled{opacity:.35;cursor:not-allowed;filter:grayscale(1)}
+#feed{width:min(340px,90vw);background:var(--card);padding:10px;border-radius:10px;font-size:11px}
+#feed b{display:block;margin-bottom:6px}
+#feed div{margin:2px 0;opacity:.9}
+.tokens{font-size:12px;color:var(--warn)}
+.pulse{animation:pulse .4s}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+</style>
+<script type="importmap">{"imports":{"@supabase/supabase-js":"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"}}</script>
+</head>
+<body>
+<div id="tag">You: ----</div>
+<div id="score">Score: 0</div>
+<div id="global">Global Clicks: 0</div>
+<div id="event"></div>
+<button id="btn">TAP</button>
+<div class="tokens">Lockouts: <span id="toks">3</span> | Regen: <span id="regen">10s</span></div>
+<div id="feed"><b>Last 5 Clickers</b></div>
+
+<script type="module">
+import { createClient } from '@supabase/supabase-js'
+
+// === 1. PASTE YOUR KEYS HERE ===
+const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co'
+const SUPABASE_ANON = 'YOUR-ANON-KEY'
+const supa = createClient(SUPABASE_URL, SUPABASE_ANON)
+// =================================
+
+const tag = localStorage.obk_tag || crypto.randomUUID().slice(0,4).toUpperCase()
+localStorage.obk_tag = tag
+document.getElementById('tag').textContent = 'You: ' + tag
+
+let score = +localStorage.obk_score || 0
+let global = 0
+let tokens = 3
+let lastTapBy = null
+let lastTapTime = 0
+let lockedUntil = 0
+let regenAt = Date.now() + 10000
+
+const btn = document.getElementById('btn')
+const scoreEl = document.getElementById('score')
+const globalEl = document.getElementById('global')
+const eventEl = document.getElementById('event')
+const feedEl = document.getElementById('feed')
+const toksEl = document.getElementById('toks')
+const regenEl = document.getElementById('regen')
+
+function render(){
+  scoreEl.textContent = 'Score: ' + score
+  globalEl.textContent = 'Global Clicks: ' + global
+  toksEl.textContent = tokens
+  localStorage.obk_score = score
+  btn.classList.add('pulse'); setTimeout(()=>btn.classList.remove('pulse'),200)
+}
+
+function regenTick(){
+  const left = Math.max(0, Math.ceil((regenAt - Date.now())/1000))
+  regenEl.textContent = left + 's'
+  if(left === 0 && tokens < 3){
+    tokens++
+    regenAt = Date.now() + 10000
+  }
+}
+setInterval(regenTick, 250)
+
+async function tap(){
+  const now = Date.now()
+  if(now < lockedUntil) return flashEvent('LOCKED 3s')
+  if(tokens <= 0) return flashEvent('NO TOKENS')
+  
+  btn.disabled = true
+  setTimeout(()=>btn.disabled=false, 180) // throttle client side
+
+  // Revenge: if you tap within 2s of someone else, spend token to lock them
+  if(now - lastTapTime < 2000 && lastTapBy && lastTapBy !== tag && tokens > 0){
+    tokens--
+    regenAt = Date.now() + 10000
+    await supa.rpc('lock_player', {target: lastTapBy})
+  }
+
+  score++
+  lastTapBy = tag
+  lastTapTime = now
+  await supa.rpc('increment_click', {player_tag: tag})
+  render()
+}
+btn.onclick = tap
+
+function flashEvent(txt){
+  eventEl.textContent = txt
+  setTimeout(()=>eventEl.textContent='', 1400)
+}
+
+function applyEvent(name){
+  if(name==='DRAGON') score = Math.max(0, score-50)
+  if(name==='GOLD') score += 100
+  if(name==='TAX') score = Math.floor(score*0.8)
+  if(name==='RESET') score = 0
+  if(name==='SWAP'){
+    // client-side swap with random last5 score if we had it. Server handles real swap.
+    score = Math.floor(Math.random()*500)
+  }
+  flashEvent(name)
+  render()
+}
+
+function updateFeed(arr){
+  feedEl.innerHTML = '<b>Last 5 Clickers</b>' + arr.map(t=>`<div>${t}</div>`).join('')
+}
+
+// Realtime
+supa.channel('obk')
+.on('postgres_changes',{event:'UPDATE',schema:'public',table:'global_state'},p=>{
+  const s = p.new
+  global = s.clicks
+  if(s.last_event && s.last_event_time > Date.now()-3500) applyEvent(s.last_event)
+  if(s.locked_tag === tag) lockedUntil = Date.now() + 3000
+  updateFeed(s.last5 || [])
+  render()
+})
+.subscribe()
+
+render()
+</script>
+</body>
+</html>
