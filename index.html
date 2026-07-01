@@ -8,22 +8,32 @@
 :root{--bg:#0a0f1a;--card:#111827;--accent:#22d3ee;--warn:#fbbf24;--text:#e5e7eb}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:ui-monospace, SFMono-Regular, monospace;
-display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:14px;user-select:none}
+display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;gap:10px;user-select:none;padding:12px;transition:background .3s}
 #tag{background:var(--card);padding:6px 10px;border-radius:8px;font-size:12px;color:#a5b4fc}
-#score{font-size:44px;font-weight:800;color:var(--accent)}
-#global{font-size:14px;opacity:.8}
-#event{font-size:18px;height:26px;color:var(--warn);font-weight:700;text-align:center}
-#btn{width:190px;height:190px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#67e8f9,#1e40af);
-border:4px solid var(--accent);color:var(--bg);font-size:22px;font-weight:900;cursor:pointer;
+#score{font-size:38px;font-weight:800;color:var(--accent)}
+#global{font-size:13px;opacity:.8}
+#event{font-size:18px;height:24px;color:var(--warn);font-weight:700;text-align:center}
+#btn{width:160px;height:160px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#67e8f9,#1e40af);
+border:4px solid var(--accent);color:var(--bg);font-size:20px;font-weight:900;cursor:pointer;
 box-shadow:0 0 40px #22d3ee55, inset 0 -10px 20px #0003;transition:transform .08s}
 #btn:active{transform:scale(.92)}
 #btn:disabled{opacity:.35;cursor:not-allowed;filter:grayscale(1)}
-#feed{width:min(340px,90vw);background:var(--card);padding:10px;border-radius:10px;font-size:11px}
-#feed b{display:block;margin-bottom:6px}
-#feed div{margin:2px 0;opacity:.9}
+.row{display:flex;gap:12px;width:min(720px,95vw);flex-wrap:wrap;justify-content:center}
+.panel{background:var(--card);padding:10px;border-radius:10px;font-size:11px}
+#feed{width:260px;min-height:120px}
+#chat{width:260px;display:flex;flex-direction:column;gap:6px}
+#chatlog{height:140px;overflow:auto;background:#0b1220;border-radius:6px;padding:6px;font-size:11px}
+#chat input{width:100%;background:#0b1220;border:1px solid #1f2937;color:var(--text);border-radius:6px;padding:6px;font-size:11px}
 .tokens{font-size:12px;color:var(--warn)}
 .pulse{animation:pulse .4s}
 @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+
+/* Event themes */
+body.dragon{background:#2b0000 !important}
+body.gold{background:#2b2600 !important}
+body.tax{background:#1a1a1a !important}
+body.reset{background:#000 !important}
+body.swap{background:linear-gradient(45deg,#2b002b,#002b2b) !important}
 </style>
 <script type="importmap">{"imports":{"@supabase/supabase-js":"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"}}</script>
 </head>
@@ -34,16 +44,22 @@ box-shadow:0 0 40px #22d3ee55, inset 0 -10px 20px #0003;transition:transform .08
 <div id="event"></div>
 <button id="btn">TAP</button>
 <div class="tokens">Lockouts: <span id="toks">3</span> | Regen: <span id="regen">10s</span></div>
-<div id="feed"><b>Last 5 Clickers</b></div>
+
+<div class="row">
+  <div class="panel" id="feed"><b>Last 5 Clickers</b></div>
+  <div class="panel" id="chat">
+    <b>Global Chat</b>
+    <div id="chatlog"></div>
+    <input id="chatin" maxlength="60" placeholder="Type + Enter">
+  </div>
+</div>
 
 <script type="module">
 import { createClient } from '@supabase/supabase-js'
 
-// === 1. YOUR KEYS ===
 const SUPABASE_URL = 'https://uomhjauwrnwpvwmqmgld.supabase.co'
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbWhqYXV3cm53cHZ3bXFtZ2xkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5MTg4MjMsImV4cCI6MjA5ODQ5NDgyM30.q1ELWvbL_FBxIjR7um_c24HgKAWMFkMQDgs0aShtRNo'
 const supa = createClient(SUPABASE_URL, SUPABASE_ANON)
-// ====================
 
 const tag = localStorage.obk_tag || crypto.randomUUID().slice(0,4).toUpperCase()
 localStorage.obk_tag = tag
@@ -56,6 +72,7 @@ let lastTapBy = null
 let lastTapTime = 0
 let lockedUntil = 0
 let regenAt = Date.now() + 10000
+let lastChat = 0 // spam throttle
 
 const btn = document.getElementById('btn')
 const scoreEl = document.getElementById('score')
@@ -64,6 +81,8 @@ const eventEl = document.getElementById('event')
 const feedEl = document.getElementById('feed')
 const toksEl = document.getElementById('toks')
 const regenEl = document.getElementById('regen')
+const chatlog = document.getElementById('chatlog')
+const chatin = document.getElementById('chatin')
 
 function render(){
   scoreEl.textContent = 'Score: ' + score
@@ -91,7 +110,6 @@ async function tap(){
   btn.disabled = true
   setTimeout(()=>btn.disabled=false, 180)
 
-  // Revenge: lock the last person if you tap fast
   if(now - lastTapTime < 2000 && lastTapBy && lastTapBy !== tag && tokens > 0){
     tokens--
     regenAt = Date.now() + 10000
@@ -112,12 +130,15 @@ function flashEvent(txt){
 }
 
 function applyEvent(name){
+  document.body.className = name.toLowerCase() // theme swap
+  setTimeout(()=>document.body.className='', 3000) // reset after 3s
+  
   if(name==='DRAGON') score = Math.max(0, score-50)
   if(name==='GOLD') score += 100
   if(name==='TAX') score = Math.floor(score*0.8)
   if(name==='RESET') score = 0
   if(name==='SWAP') score = Math.floor(Math.random()*500)
-  flashEvent(name)
+  flashEvent('EVENT: ' + name)
   render()
 }
 
@@ -125,8 +146,29 @@ function updateFeed(arr){
   feedEl.innerHTML = '<b>Last 5 Clickers</b>' + (arr||[]).map(t=>`<div>${t}</div>`).join('')
 }
 
-// Realtime -> now listening to obk_global_state
-supa.channel('obk')
+function addChat(tag, msg){
+  const div = document.createElement('div')
+  div.innerHTML = `<b style="color:#a5b4fc">${tag}</b>: ${msg}`
+  chatlog.appendChild(div)
+  chatlog.scrollTop = chatlog.scrollHeight
+  // keep last 20
+  while(chatlog.children.length > 20) chatlog.removeChild(chatlog.firstChild)
+}
+
+// Chat send
+chatin.onkeydown = async e=>{
+  if(e.key==='Enter' && chatin.value.trim()){
+    const now = Date.now()
+    if(now - lastChat < 800) return // 1.25 msg/sec max
+    lastChat = now
+    const msg = chatin.value.slice(0,60)
+    chatin.value = ''
+    await supa.from('obk_chat').insert({tag, msg})
+  }
+}
+
+// Realtime: game state
+supa.channel('obk_state')
 .on('postgres_changes',{event:'UPDATE',schema:'public',table:'obk_global_state'},p=>{
   const s = p.new
   global = s.clicks
@@ -136,6 +178,18 @@ supa.channel('obk')
   render()
 })
 .subscribe()
+
+// Realtime: chat
+supa.channel('obk_chat')
+.on('postgres_changes',{event:'INSERT',schema:'public',table:'obk_chat'},p=>{
+  addChat(p.new.tag, p.new.msg)
+})
+.subscribe()
+
+// Load last 20 chat on boot
+supa.from('obk_chat').select().order('id',{ascending:false}).limit(20).then(({data})=>{
+  (data||[]).reverse().forEach(r=>addChat(r.tag, r.msg))
+})
 
 render()
 </script>
