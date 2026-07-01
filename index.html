@@ -7,211 +7,169 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💀</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fredoka:wght@600;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#070000;           /* black red */
-  --card:#1a0a0a;
-  --accent:#ff1e1e;       /* blood */
-  --warn:#ffd166;         
-  --text:#f2e6e6;
-  --title: 'Creepster', cursive; 
-  --ui: 'Fredoka', sans-serif;
-}
+:root{--bg:#070000;--card:#1a0a0a;--red:#ff1e1e;--blue:#1e7dff;--warn:#ffd166;--text:#f2e6e6;--title:'Creepster',cursive;--ui:'Fredoka',sans-serif}
 *{box-sizing:border-box}
-body{
-  margin:0;background:var(--bg);color:var(--text);font-family:var(--ui);
-  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-  min-height:100vh;gap:8px;user-select:none;padding:12px;transition:background .2s;
-  background-image:radial-gradient(#ff000010 1px, transparent 1px);
-  background-size:20px 20px;
-}
-#brand{font-family:var(--title);font-size:32px;color:var(--accent);letter-spacing:2px;text-shadow:0 0 10px #ff0000aa}
-#tag{background:var(--card);padding:5px 9px;border-radius:6px;font-size:11px;color:#ff9b9b}
-#score{font-size:36px;font-weight:800;color:var(--accent)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--ui);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;gap:8px;padding:12px;transition:background .2s}
+#brand{font-family:var(--title);font-size:28px;color:var(--red);text-shadow:0 0 10px #ff0000aa}
+#rules{background:#1a0a0a;border:1px solid #ff000033;border-radius:8px;padding:8px;font-size:11px;width:min(720px,95vw)}
+#rules b{color:var(--warn)}
+#tag{background:var(--card);padding:5px 9px;border-radius:6px;font-size:11px}
+#score{font-size:32px;font-weight:800;color:var(--red)}
 #global{font-size:12px;opacity:.8}
-#event{font-size:18px;height:24px;color:var(--warn);font-weight:900;text-align:center;text-shadow:0 0 8px #ffd166}
-#btn{
-  width:170px;height:170px;border-radius:40% 60% 70% 30% / 40% 50% 60% 50%;
-  background:radial-gradient(circle at 30% 30%,#ff5555,#660000);
-  border:4px solid var(--accent);color:#fff;font-size:26px;font-weight:900;cursor:pointer;
-  box-shadow:0 0 50px #ff000088, inset 0 -12px 20px #0008;transition:transform .08s;
-  font-family:var(--title);letter-spacing:1px;
-}
-#btn:active{transform:scale(.9) rotate(-2deg)}
+#event{font-size:18px;height:24px;color:var(--warn);font-weight:900;text-align:center}
+#btn{width:160px;height:160px;border-radius:40% 60% 70% 30%;background:radial-gradient(circle at 30% 30%,#ff5555,#660000);border:4px solid var(--red);color:#fff;font-size:22px;font-weight:900;cursor:pointer;box-shadow:0 0 50px #ff000088;transition:transform .08s;font-family:var(--title)}
+#btn:active{transform:scale(.9)}
 #btn:disabled{opacity:.3;cursor:not-allowed;filter:grayscale(.6)}
-.row{display:flex;gap:10px;width:min(720px,95vw);flex-wrap:wrap;justify-content:center}
+.row{display:flex;gap:10px;width:min(900px,95vw);flex-wrap:wrap;justify-content:center}
 .panel{background:var(--card);padding:9px;border-radius:8px;font-size:11px;border:1px solid #ff000033}
-#feed{width:260px;min-height:120px}
-#chat{width:260px;display:flex;flex-direction:column;gap:6px}
-#chatlog{height:140px;overflow:auto;background:#0a0000;border-radius:6px;padding:6px;font-size:11px;border:1px solid #ff000022}
-#chat input{
-  width:100%;background:#0a0000;border:1px solid #ff000055;color:var(--text);
-  border-radius:6px;padding:6px;font-size:11px;font-family:var(--ui)
-}
+#mascot{width:120px;height:160px;background:#1a0a0a;border:1px solid #ff000033;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:64px;transition:transform .1s}
+#mascot.shake{animation:shake .25s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.teamSel{display:flex;gap:6px;margin-top:4px}
+.teamSel button{flex:1;padding:6px;border:0;border-radius:6px;font-weight:800;cursor:pointer}
+.red{background:var(--red);color:#fff}.blue{background:var(--blue);color:#fff}
+#feed,#chat,#teams{width:260px;min-height:120px}
+#chatlog,#teamlog{height:120px;overflow:auto;background:#0a0000;border-radius:6px;padding:6px;font-size:11px}
+#chat input{width:100%;background:#0a0000;border:1px solid #ff000055;color:var(--text);border-radius:6px;padding:6px;font-size:11px}
 .tokens{font-size:12px;color:var(--warn)}
-.pulse{animation:pulse .3s}
-@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.1) rotate(2deg)}100%{transform:scale(1)}}
-.shake{animation:shake .3s}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-
-/* Event themes = cursed */
-body.dragon{background:#2b0000 !important;filter:sepia(1) hue-rotate(-10deg)}
-body.gold{background:#2b2200 !important}
-body.tax{background:#111 !important;filter:grayscale(1)}
-body.reset{background:#000 !important}
-body.swap{background:repeating-linear-gradient(45deg,#2b002b,#2b002b 10px,#002b2b 10px,#002b2b 20px) !important}
+.pulse{animation:pulse .3s}@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+body.dragon{background:#2b0000 !important}body.gold{background:#2b2200 !important}body.tax{background:#111 !important;filter:grayscale(1)}body.reset{background:#000 !important}body.swap{background:repeating-linear-gradient(45deg,#2b002b,#2b002b 10px,#002b2b 10px,#002b2b 20px) !important}
 </style>
 <script type="importmap">{"imports":{"@supabase/supabase-js":"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"}}</script>
 </head>
 <body>
 <div id="brand">💀 TAPDOOM</div>
-<div id="tag">Soul: ----</div>
+
+<div id="rules">
+  <b>HOW TO PLAY:</b> 
+  Tap = +1 Blood. Every <b>100 Curses</b> = World Event: DRAGON -50, GOLD +100, TAX -20%, RESET 0, SWAP random. 
+  Every <b>1000 Curses</b> = MAP WIPE: All scores reset to 0. 
+  Join <b>RED or BLUE</b> team. Lockout enemies with 3 Curses. Last 5 Souls shown. First team to 50k wins the day.
+</div>
+
+<div id="tag">Soul: ---- | Team: <span id="teamTxt">None</span></div>
 <div id="score">Blood: 0</div>
 <div id="global">Curses: 0</div>
 <div id="event"></div>
-<button id="btn">CLICK</button>
+
+<div class="row">
+  <div id="mascot">😈</div>
+  <button id="btn">CLICK</button>
+  <div id="teams" class="panel">
+    <b>Teams</b>
+    <div>RED: <span id="redScore">0</span></div>
+    <div>BLUE: <span id="blueScore">0</span></div>
+    <div class="teamSel">
+      <button class="red" id="joinRed">Join RED</button>
+      <button class="blue" id="joinBlue">Join BLUE</button>
+    </div>
+    <div id="teamlog"></div>
+  </div>
+</div>
+
 <div class="tokens">Curses: <span id="toks">3</span> | Cooldown: <span id="regen">10s</span></div>
 
 <div class="row">
   <div class="panel" id="feed"><b>Last 5 Souls</b></div>
-  <div class="panel" id="chat">
-    <b>Graveyard Chat</b>
-    <div id="chatlog"></div>
-    <input id="chatin" maxlength="60" placeholder="Scream into the void...">
-  </div>
+  <div class="panel" id="chat"><b>Graveyard Chat</b><div id="chatlog"></div><input id="chatin" maxlength="60" placeholder="Scream..."></div>
 </div>
 
 <script type="module">
 import { createClient } from '@supabase/supabase-js'
-
 const SUPABASE_URL = 'https://uomhjauwrnwpvwmqmgld.supabase.co'
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbWhqYXV3cm53cHZ3bXFtZ2xkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5MTg4MjMsImV4cCI6MjA5ODQ5NDgyM30.q1ELWvbL_FBxIjR7um_c24HgKAWMFkMQDgs0aShtRNo'
 const supa = createClient(SUPABASE_URL, SUPABASE_ANON)
 
 const tag = localStorage.td_tag || crypto.randomUUID().slice(0,4).toUpperCase()
 localStorage.td_tag = tag
-document.getElementById('tag').textContent = 'Soul: ' + tag
+document.getElementById('tag').textContent = 'Soul: ' + tag + ' | Team: '
+const teamTxt = document.getElementById('teamTxt')
 
+let team = localStorage.td_team || null
 let score = +localStorage.td_score || 0
-let global = 0
-let tokens = 3
-let lastTapBy = null
-let lastTapTime = 0
-let lockedUntil = 0
-let regenAt = Date.now() + 10000
-let lastChat = 0
+let global = 0, redScore=0, blueScore=0
+let tokens = 3, lastTapBy=null, lastTapTime=0, lockedUntil=0, regenAt=Date.now()+10000, lastChat=0
 
-const btn = document.getElementById('btn')
-const scoreEl = document.getElementById('score')
-const globalEl = document.getElementById('global')
-const eventEl = document.getElementById('event')
-const feedEl = document.getElementById('feed')
-const toksEl = document.getElementById('toks')
-const regenEl = document.getElementById('regen')
-const chatlog = document.getElementById('chatlog')
-const chatin = document.getElementById('chatin')
+const btn=document.getElementById('btn'), scoreEl=document.getElementById('score'), globalEl=document.getElementById('global')
+const eventEl=document.getElementById('event'), feedEl=document.getElementById('feed'), toksEl=document.getElementById('toks')
+const regenEl=document.getElementById('regen'), chatlog=document.getElementById('chatlog'), chatin=document.getElementById('chatin')
+const mascot=document.getElementById('mascot'), redScoreEl=document.getElementById('redScore'), blueScoreEl=document.getElementById('blueScore'), teamlog=document.getElementById('teamlog')
+
+function setTeam(t){team=t;localStorage.td_team=t;teamTxt.textContent=t.toUpperCase();teamTxt.style.color=t==='red'?'var(--red)':'var(--blue)'}
+document.getElementById('joinRed').onclick=()=>setTeam('red')
+document.getElementById('joinBlue').onclick=()=>setTeam('blue')
+if(team) setTeam(team)
 
 function render(){
-  scoreEl.textContent = 'Blood: ' + score
-  globalEl.textContent = 'Curses: ' + global
-  toksEl.textContent = tokens
-  localStorage.td_score = score
-  btn.classList.add('pulse'); setTimeout(()=>btn.classList.remove('pulse'),200)
+  scoreEl.textContent='Blood: '+score
+  globalEl.textContent='Curses: '+global
+  toksEl.textContent=tokens
+  redScoreEl.textContent=redScore
+  blueScoreEl.textContent=blueScore
+  localStorage.td_score=score
+  btn.classList.add('pulse');setTimeout(()=>btn.classList.remove('pulse'),200)
 }
 
 function regenTick(){
-  const left = Math.max(0, Math.ceil((regenAt - Date.now())/1000))
-  regenEl.textContent = left + 's'
-  if(left === 0 && tokens < 3){
-    tokens++
-    regenAt = Date.now() + 10000
-  }
-}
-setInterval(regenTick, 250)
+  const left=Math.max(0,Math.ceil((regenAt-Date.now())/1000))
+  regenEl.textContent=left+'s'
+  if(left===0&&tokens<3){tokens++;regenAt=Date.now()+10000}
+setInterval(regenTick,250)
 
 async function tap(){
-  const now = Date.now()
-  if(now < lockedUntil) return flashEvent('CURSED 3s')
-  if(tokens <= 0) return flashEvent('NO CURSES')
+  const now=Date.now()
+  if(!team) return flashEvent('PICK A TEAM FIRST')
+  if(now<lockedUntil) return flashEvent('CURSED 3s')
+  if(tokens<=0) return flashEvent('NO CURSES')
   
-  btn.disabled = true
-  setTimeout(()=>btn.disabled=false, 180)
+  btn.disabled=true; setTimeout(()=>btn.disabled=false,180)
+  mascot.classList.add('shake'); setTimeout(()=>mascot.classList.remove('shake'),200) // non-sexual reaction
+  mascot.textContent = Math.random()>.5?'😈':'👹' // mascot changes face
 
-  if(now - lastTapTime < 2000 && lastTapBy && lastTapBy !== tag && tokens > 0){
-    tokens--
-    regenAt = Date.now() + 10000
-    btn.classList.add('shake'); setTimeout(()=>btn.classList.remove('shake'),300)
-    await supa.rpc('obk_lock_player', {target: lastTapBy})
+  if(now-lastTapTime<2000&&lastTapBy&&lastTapBy!==tag&&tokens>0){
+    tokens--; regenAt=Date.now()+10000
+    await supa.rpc('obk_lock_player',{target:lastTapBy})
   }
 
-  score++
-  lastTapBy = tag
-  lastTapTime = now
-  await supa.rpc('obk_increment_click', {player_tag: tag})
+  score++; if(team==='red') redScore++; else blueScore++
+  lastTapBy=tag; lastTapTime=now
+  await supa.rpc('obk_increment_click',{player_tag:tag})
   render()
 }
-btn.onclick = tap
+btn.onclick=tap
 
-function flashEvent(txt){
-  eventEl.textContent = txt
-  setTimeout(()=>eventEl.textContent='', 1400)
-}
+function flashEvent(txt){eventEl.textContent=txt;setTimeout(()=>eventEl.textContent='',1400)}
 
 function applyEvent(name){
-  document.body.className = name.toLowerCase()
-  setTimeout(()=>document.body.className='', 3000)
+  document.body.className=name.toLowerCase()
+  setTimeout(()=>document.body.className='',3000)
+  mascot.textContent = name==='DRAGON'?'🔥':name==='GOLD'?'💰':name==='TAX'?'🧾':name==='RESET'?'💀':'🔄'
   
-  if(name==='DRAGON') score = Math.max(0, score-50)
-  if(name==='GOLD') score += 100
-  if(name==='TAX') score = Math.floor(score*0.8)
-  if(name==='RESET') score = 0
-  if(name==='SWAP') score = Math.floor(Math.random()*500)
-  flashEvent('RITUAL: ' + name)
+  if(name==='DRAGON') score=Math.max(0,score-50)
+  if(name==='GOLD') score+=100
+  if(name==='TAX') score=Math.floor(score*0.8)
+  if(name==='RESET') score=0
+  if(name==='SWAP') score=Math.floor(Math.random()*500)
+  flashEvent('RITUAL: '+name)
   render()
 }
 
-function updateFeed(arr){
-  feedEl.innerHTML = '<b>Last 5 Souls</b>' + (arr||[]).map(t=>`<div>${t}</div>`).join('')
-}
+function updateFeed(arr){feedEl.innerHTML='<b>Last 5 Souls</b>'+(arr||[]).map(t=>`<div>${t}</div>`).join('')}
+function addChat(tag,msg){const div=document.createElement('div');div.innerHTML=`<b style="color:#ff9b9b">${tag}</b>: ${msg}`;chatlog.appendChild(div);chatlog.scrollTop=chatlog.scrollHeight;while(chatlog.children.length>20)chatlog.removeChild(chatlog.firstChild)}
 
-function addChat(tag, msg){
-  const div = document.createElement('div')
-  div.innerHTML = `<b style="color:#ff9b9b">${tag}</b>: ${msg}`
-  chatlog.appendChild(div)
-  chatlog.scrollTop = chatlog.scrollHeight
-  while(chatlog.children.length > 20) chatlog.removeChild(chatlog.firstChild)
-}
+chatin.onkeydown=async e=>{if(e.key==='Enter'&&chatin.value.trim()){const now=Date.now();if(now-lastChat<800)return;lastChat=now;const msg=chatin.value.slice(0,60);chatin.value='';await supa.from('obk_chat').insert({tag,msg})}}
 
-chatin.onkeydown = async e=>{
-  if(e.key==='Enter' && chatin.value.trim()){
-    const now = Date.now()
-    if(now - lastChat < 800) return
-    lastChat = now
-    const msg = chatin.value.slice(0,60)
-    chatin.value = ''
-    await supa.from('obk_chat').insert({tag, msg})
-  }
-}
-
-supa.channel('obk_state')
-.on('postgres_changes',{event:'UPDATE',schema:'public',table:'obk_global_state'},p=>{
-  const s = p.new
-  global = s.clicks
-  if(s.last_event && s.last_event_time > Date.now()-3500) applyEvent(s.last_event)
-  if(s.locked_tag === tag){lockedUntil = Date.now() + 3000; btn.classList.add('shake'); setTimeout(()=>btn.classList.remove('shake'),300)}
-  updateFeed(s.last5 || [])
+supa.channel('obk_state').on('postgres_changes',{event:'UPDATE',schema:'public',table:'obk_global_state'},p=>{
+  const s=p.new; global=s.clicks
+  if(s.clicks%1000===0 && s.clicks>0) {score=0; redScore=0; blueScore=0; flashEvent('MAP WIPE 1000')} // 1000 rule
+  if(s.last_event&&s.last_event_time>Date.now()-3500) applyEvent(s.last_event)
+  if(s.locked_tag===tag){lockedUntil=Date.now()+3000; mascot.classList.add('shake');setTimeout(()=>mascot.classList.remove('shake'),300)}
+  updateFeed(s.last5||[])
   render()
-})
-.subscribe()
+}).subscribe()
 
-supa.channel('obk_chat')
-.on('postgres_changes',{event:'INSERT',schema:'public',table:'obk_chat'},p=>{
-  addChat(p.new.tag, p.new.msg)
-})
-.subscribe()
-
-supa.from('obk_chat').select().order('id',{ascending:false}).limit(20).then(({data})=>{
-  (data||[]).reverse().forEach(r=>addChat(r.tag, r.msg))
-})
+supa.channel('obk_chat').on('postgres_changes',{event:'INSERT',schema:'public',table:'obk_chat'},p=>{addChat(p.new.tag,p.new.msg)}).subscribe()
+supa.from('obk_chat').select().order('id',{ascending:false}).limit(20).then(({data})=>{(data||[]).reverse().forEach(r=>addChat(r.tag,r.msg))})
 
 render()
 </script>
