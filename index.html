@@ -3,75 +3,127 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TapDoom - Click or Die</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💀</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fredoka:wght@600;800&display=swap" rel="stylesheet">
+<title>JellyDoom - Wobble or Die</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🫠</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#070000;--card:#1a0a0a;--red:#ff1e1e;--blue:#1e7dff;--warn:#ffd166;--text:#f2e6e6;--title:'Creepster',cursive;--ui:'Fredoka',sans-serif}
+:root{
+  --bg:#1a0b2e; /* deep purple jelly */
+  --card:#2a1a3e;
+  --red:#ff4d8d; /* neon pink */
+  --blue:#4da3ff; /* neon blue */
+  --warn:#ffe066;
+  --text:#fff0f8;
+  --outline:#000;
+  --title:'Fredoka One', cursive;
+  --ui:'Nunito', sans-serif;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:var(--ui);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;gap:8px;padding:12px;transition:background .2s}
-#brand{font-family:var(--title);font-size:28px;color:var(--red);text-shadow:0 0 10px #ff0000aa}
-#rules{background:#1a0a0a;border:1px solid #ff000033;border-radius:8px;padding:8px;font-size:11px;width:min(720px,95vw)}
-#rules b{color:var(--warn)}
-#tag{background:var(--card);padding:5px 9px;border-radius:6px;font-size:11px}
-#score{font-size:32px;font-weight:800;color:var(--red)}
-#global{font-size:12px;opacity:.8}
-#event{font-size:18px;height:24px;color:var(--warn);font-weight:900;text-align:center}
-#btn{width:160px;height:160px;border-radius:40% 60% 70% 30%;background:radial-gradient(circle at 30% 30%,#ff5555,#660000);border:4px solid var(--red);color:#fff;font-size:22px;font-weight:900;cursor:pointer;box-shadow:0 0 50px #ff000088;transition:transform .08s;font-family:var(--title)}
-#btn:active{transform:scale(.9)}
-#btn:disabled{opacity:.3;cursor:not-allowed;filter:grayscale(.6)}
-.row{display:flex;gap:10px;width:min(900px,95vw);flex-wrap:wrap;justify-content:center}
-.panel{background:var(--card);padding:9px;border-radius:8px;font-size:11px;border:1px solid #ff000033}
-#mascot{width:120px;height:160px;background:#1a0a0a;border:1px solid #ff000033;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:64px;transition:transform .1s}
-#mascot.shake{animation:shake .25s}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-.teamSel{display:flex;gap:6px;margin-top:4px}
-.teamSel button{flex:1;padding:6px;border:0;border-radius:6px;font-weight:800;cursor:pointer}
+body{
+  margin:0;background:radial-gradient(circle at 50% 0%,#2a1a3e 0%,var(--bg) 60%);
+  color:var(--text);font-family:var(--ui);display:flex;flex-direction:column;align-items:center;
+  min-height:100vh;gap:10px;padding:14px;
+}
+#brand{
+  font-family:var(--title);font-size:42px;color:var(--red);-webkit-text-stroke:3px var(--outline);
+  filter:drop-shadow(0 6px 0 #000);animation:wobble 1.8s infinite ease-in-out
+}
+@keyframes wobble{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1deg)}}
+
+#rules{
+  background:var(--card);border:4px solid var(--outline);border-radius:20px;padding:10px 14px;
+  font-size:12px;width:min(740px,95vw);box-shadow:0 6px 0 #000
+}
+#rules b{color:var(--warn);font-family:var(--title)}
+
+#tag{background:var(--card);padding:8px 14px;border-radius:999px;font-size:12px;font-weight:800;border:3px solid var(--outline);box-shadow:0 4px 0 #000}
+#score{font-size:40px;font-weight:900;font-family:var(--title);-webkit-text-stroke:2px var(--outline);filter:drop-shadow(0 4px 0 #000)}
+#global{font-size:14px;opacity:.9;font-weight:800}
+#event{font-size:20px;height:26px;color:var(--warn);font-weight:900;font-family:var(--title);-webkit-text-stroke:1px var(--outline)}
+
+#btn{
+  width:180px;height:180px;border-radius:40% 60% 70% 30% / 50% 40% 60% 50%;
+  background:radial-gradient(circle at 30% 30%,#ff7bb3,#c70064);
+  border:6px solid var(--outline);color:#fff;font-size:26px;font-weight:900;cursor:pointer;
+  box-shadow:0 12px 0 #000, 0 0 40px #ff4d8d88;transition:transform.08s;
+  font-family:var(--title);-webkit-text-stroke:2px var(--outline)
+}
+#btn:active{transform:translateY(8px) scale(.95);box-shadow:0 4px 0 #000}
+#btn:disabled{opacity:.4;filter:grayscale(.4)}
+
+.row{display:flex;gap:14px;width:min(980px,95vw);flex-wrap:wrap;justify-content:center;align-items:flex-start}
+.panel{
+  background:var(--card);padding:12px;border-radius:20px;font-size:12px;font-weight:700;
+  border:4px solid var(--outline);box-shadow:0 6px 0 #000
+}
+#mascot{
+  width:140px;height:180px;background:var(--card);border:4px solid var(--outline);
+  border-radius:30px;display:flex;align-items:center;justify-content:center;font-size:80px;
+  transition:transform.15s;box-shadow:0 6px 0 #000
+}
+#mascot.jelly{animation:jelly.4s}
+@keyframes jelly{0%{transform:scale(1,1)}30%{transform:scale(1.15,.85)}60%{transform:scale(.9,1.1)}100%{transform:scale(1,1)}}
+
+.teamSel{display:flex;gap:8px;margin-top:6px}
+.teamSel button{
+  flex:1;padding:10px;border:4px solid var(--outline);border-radius:14px;font-weight:900;
+  cursor:pointer;font-family:var(--title);font-size:14px;box-shadow:0 4px 0 #000
+}
+.teamSel button:active{transform:translateY(4px);box-shadow:0 0 0 #000}
 .red{background:var(--red);color:#fff}.blue{background:var(--blue);color:#fff}
-#feed,#chat,#teams{width:260px;min-height:120px}
-#chatlog,#teamlog{height:120px;overflow:auto;background:#0a0000;border-radius:6px;padding:6px;font-size:11px}
-#chat input{width:100%;background:#0a0000;border:1px solid #ff000055;color:var(--text);border-radius:6px;padding:6px;font-size:11px}
-.tokens{font-size:12px;color:var(--warn)}
-.pulse{animation:pulse .3s}@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
-body.dragon{background:#2b0000 !important}body.gold{background:#2b2200 !important}body.tax{background:#111 !important;filter:grayscale(1)}body.reset{background:#000 !important}body.swap{background:repeating-linear-gradient(45deg,#2b002b,#2b002b 10px,#002b2b 10px,#002b2b 20px) !important}
+
+#feed,#chat,#teams{width:280px;min-height:140px}
+#chatlog,#teamlog{height:130px;overflow:auto;background:#120a1f;border-radius:12px;padding:8px;font-size:12px;border:3px solid var(--outline)}
+#chat input{
+  width:100%;background:#120a1f;border:3px solid var(--outline);color:var(--text);
+  border-radius:12px;padding:8px;font-size:12px;font-family:var(--ui);font-weight:700
+}
+.tokens{font-size:14px;color:var(--warn);font-weight:900}
+.pulse{animation:pop.25s}@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
+
+/* Event themes = heavy */
+body.dragon{background:radial-gradient(#ff0033 0%,#2b0000 70%)!important;filter:saturate(1.4)}
+body.gold{background:radial-gradient(#ffd700 0%,#2b2200 70%)!important}
+body.tax{background:#111!important;filter:grayscale(1) contrast(1.3)}
+body.reset{background:#000!important}
+body.swap{background:repeating-conic-gradient(from 0deg,#2b002b 0 15deg,#002b2b 15deg 30deg)!important}
 </style>
 <script type="importmap">{"imports":{"@supabase/supabase-js":"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"}}</script>
 </head>
 <body>
-<div id="brand">💀 TAPDOOM</div>
+<div id="brand">🫠 JELLYDOOM</div>
 
 <div id="rules">
-  <b>HOW TO PLAY:</b> 
-  Tap = +1 Blood. Every <b>100 Curses</b> = World Event: DRAGON -50, GOLD +100, TAX -20%, RESET 0, SWAP random. 
-  Every <b>1000 Curses</b> = MAP WIPE: All scores reset to 0. 
-  Join <b>RED or BLUE</b> team. Lockout enemies with 3 Curses. Last 5 Souls shown. First team to 50k wins the day.
+  <b>RULES:</b> Tap the Jelly = +1 Slime. Every <b>100 Slimes</b> = WORLD WOBBLE: DRAGON -50, GOLD +100, TAX -20%, RESET 0, SWAP random.
+  Every <b>1000 Slimes</b> = TOTAL MELT: Everyone resets to 0.
+  Pick <b>RED or BLUE</b> JELLY TEAM. Use 3 Curses to LOCK enemies for 3s. Top team wins the day.
 </div>
 
-<div id="tag">Soul: ---- | Team: <span id="teamTxt">None</span></div>
-<div id="score">Blood: 0</div>
-<div id="global">Curses: 0</div>
+<div id="tag">Jelly: ---- | Team: <span id="teamTxt">None</span></div>
+<div id="score">Slime: 0</div>
+<div id="global">Slimes: 0</div>
 <div id="event"></div>
 
 <div class="row">
-  <div id="mascot">😈</div>
-  <button id="btn">CLICK</button>
+  <div id="mascot">🫠</div>
+  <button id="btn">WOBBLE</button>
   <div id="teams" class="panel">
-    <b>Teams</b>
-    <div>RED: <span id="redScore">0</span></div>
-    <div>BLUE: <span id="blueScore">0</span></div>
+    <b>TEAM WARS</b>
+    <div>🔴 RED: <span id="redScore">0</span></div>
+    <div>🔵 BLUE: <span id="blueScore">0</span></div>
     <div class="teamSel">
-      <button class="red" id="joinRed">Join RED</button>
-      <button class="blue" id="joinBlue">Join BLUE</button>
+      <button class="red" id="joinRed">JOIN RED</button>
+      <button class="blue" id="joinBlue">JOIN BLUE</button>
     </div>
-    <div id="teamlog"></div>
+    <div id="teamlog" style="margin-top:6px;font-size:11px"></div>
   </div>
 </div>
 
-<div class="tokens">Curses: <span id="toks">3</span> | Cooldown: <span id="regen">10s</span></div>
+<div class="tokens">Curses: <span id="toks">3</span> | Regen: <span id="regen">10s</span></div>
 
 <div class="row">
-  <div class="panel" id="feed"><b>Last 5 Souls</b></div>
-  <div class="panel" id="chat"><b>Graveyard Chat</b><div id="chatlog"></div><input id="chatin" maxlength="60" placeholder="Scream..."></div>
+  <div class="panel" id="feed"><b>LAST 5 JELLIES</b></div>
+  <div class="panel" id="chat"><b>GELLY CHAT</b><div id="chatlog"></div><input id="chatin" maxlength="60" placeholder="SQUISH..."></div>
 </div>
 
 <script type="module">
@@ -80,33 +132,33 @@ const SUPABASE_URL = 'https://uomhjauwrnwpvwmqmgld.supabase.co'
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbWhqYXV3cm53cHZ3bXFtZ2xkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5MTg4MjMsImV4cCI6MjA5ODQ5NDgyM30.q1ELWvbL_FBxIjR7um_c24HgKAWMFkMQDgs0aShtRNo'
 const supa = createClient(SUPABASE_URL, SUPABASE_ANON)
 
-const tag = localStorage.td_tag || crypto.randomUUID().slice(0,4).toUpperCase()
-localStorage.td_tag = tag
-document.getElementById('tag').textContent = 'Soul: ' + tag + ' | Team: '
+const tag = localStorage.jd_tag || crypto.randomUUID().slice(0,4).toUpperCase()
+localStorage.jd_tag = tag
+document.getElementById('tag').childNodes[0].textContent = 'Jelly: ' + tag + ' | Team: '
 const teamTxt = document.getElementById('teamTxt')
 
-let team = localStorage.td_team || null
-let score = +localStorage.td_score || 0
+let team = localStorage.jd_team || null
+let score = +localStorage.jd_score || 0
 let global = 0, redScore=0, blueScore=0
 let tokens = 3, lastTapBy=null, lastTapTime=0, lockedUntil=0, regenAt=Date.now()+10000, lastChat=0
 
 const btn=document.getElementById('btn'), scoreEl=document.getElementById('score'), globalEl=document.getElementById('global')
 const eventEl=document.getElementById('event'), feedEl=document.getElementById('feed'), toksEl=document.getElementById('toks')
 const regenEl=document.getElementById('regen'), chatlog=document.getElementById('chatlog'), chatin=document.getElementById('chatin')
-const mascot=document.getElementById('mascot'), redScoreEl=document.getElementById('redScore'), blueScoreEl=document.getElementById('blueScore'), teamlog=document.getElementById('teamlog')
+const mascot=document.getElementById('mascot'), redScoreEl=document.getElementById('redScore'), blueScoreEl=document.getElementById('blueScore')
 
-function setTeam(t){team=t;localStorage.td_team=t;teamTxt.textContent=t.toUpperCase();teamTxt.style.color=t==='red'?'var(--red)':'var(--blue)'}
+function setTeam(t){team=t;localStorage.jd_team=t;teamTxt.textContent=t.toUpperCase();teamTxt.style.color=t==='red'?'var(--red)':'var(--blue)'}
 document.getElementById('joinRed').onclick=()=>setTeam('red')
 document.getElementById('joinBlue').onclick=()=>setTeam('blue')
 if(team) setTeam(team)
 
 function render(){
-  scoreEl.textContent='Blood: '+score
-  globalEl.textContent='Curses: '+global
+  scoreEl.textContent='Slime: '+score
+  globalEl.textContent='Slimes: '+global
   toksEl.textContent=tokens
   redScoreEl.textContent=redScore
   blueScoreEl.textContent=blueScore
-  localStorage.td_score=score
+  localStorage.jd_score=score
   btn.classList.add('pulse');setTimeout(()=>btn.classList.remove('pulse'),200)
 }
 
@@ -118,13 +170,13 @@ setInterval(regenTick,250)
 
 async function tap(){
   const now=Date.now()
-  if(!team) return flashEvent('PICK A TEAM FIRST')
-  if(now<lockedUntil) return flashEvent('CURSED 3s')
+  if(!team) return flashEvent('PICK A JELLY TEAM')
+  if(now<lockedUntil) return flashEvent('STUCK 3s')
   if(tokens<=0) return flashEvent('NO CURSES')
-  
-  btn.disabled=true; setTimeout(()=>btn.disabled=false,180)
-  mascot.classList.add('shake'); setTimeout(()=>mascot.classList.remove('shake'),200) // non-sexual reaction
-  mascot.textContent = Math.random()>.5?'😈':'👹' // mascot changes face
+
+  btn.disabled=true; setTimeout(()=>btn.disabled=false,160)
+  mascot.classList.add('jelly'); setTimeout(()=>mascot.classList.remove('jelly'),400)
+  mascot.textContent = ['🫠','🫥','😵‍💫','🤪'][Math.floor(Math.random()*4)] // wobble faces
 
   if(now-lastTapTime<2000&&lastTapBy&&lastTapBy!==tag&&tokens>0){
     tokens--; regenAt=Date.now()+10000
@@ -138,32 +190,32 @@ async function tap(){
 }
 btn.onclick=tap
 
-function flashEvent(txt){eventEl.textContent=txt;setTimeout(()=>eventEl.textContent='',1400)}
+function flashEvent(txt){eventEl.textContent=txt;setTimeout(()=>eventEl.textContent='',1500)}
 
 function applyEvent(name){
   document.body.className=name.toLowerCase()
   setTimeout(()=>document.body.className='',3000)
-  mascot.textContent = name==='DRAGON'?'🔥':name==='GOLD'?'💰':name==='TAX'?'🧾':name==='RESET'?'💀':'🔄'
-  
+  mascot.textContent = name==='DRAGON'?'🥵':name==='GOLD'?'🤑':name==='TAX'?'😭':name==='RESET'?'💀':'🌀'
+
   if(name==='DRAGON') score=Math.max(0,score-50)
   if(name==='GOLD') score+=100
   if(name==='TAX') score=Math.floor(score*0.8)
   if(name==='RESET') score=0
   if(name==='SWAP') score=Math.floor(Math.random()*500)
-  flashEvent('RITUAL: '+name)
+  flashEvent('WOBBLE: '+name)
   render()
 }
 
-function updateFeed(arr){feedEl.innerHTML='<b>Last 5 Souls</b>'+(arr||[]).map(t=>`<div>${t}</div>`).join('')}
-function addChat(tag,msg){const div=document.createElement('div');div.innerHTML=`<b style="color:#ff9b9b">${tag}</b>: ${msg}`;chatlog.appendChild(div);chatlog.scrollTop=chatlog.scrollHeight;while(chatlog.children.length>20)chatlog.removeChild(chatlog.firstChild)}
+function updateFeed(arr){feedEl.innerHTML='<b>LAST 5 JELLIES</b>'+(arr||[]).map(t=>`<div>${t}</div>`).join('')}
+function addChat(tag,msg){const div=document.createElement('div');div.innerHTML=`<b style="color:#ff7bb3">${tag}</b>: ${msg}`;chatlog.appendChild(div);chatlog.scrollTop=chatlog.scrollHeight;while(chatlog.children.length>20)chatlog.removeChild(chatlog.firstChild)}
 
 chatin.onkeydown=async e=>{if(e.key==='Enter'&&chatin.value.trim()){const now=Date.now();if(now-lastChat<800)return;lastChat=now;const msg=chatin.value.slice(0,60);chatin.value='';await supa.from('obk_chat').insert({tag,msg})}}
 
 supa.channel('obk_state').on('postgres_changes',{event:'UPDATE',schema:'public',table:'obk_global_state'},p=>{
   const s=p.new; global=s.clicks
-  if(s.clicks%1000===0 && s.clicks>0) {score=0; redScore=0; blueScore=0; flashEvent('MAP WIPE 1000')} // 1000 rule
+  if(s.clicks%1000===0 && s.clicks>0) {score=0; redScore=0; blueScore=0; flashEvent('TOTAL MELT 1000')}
   if(s.last_event&&s.last_event_time>Date.now()-3500) applyEvent(s.last_event)
-  if(s.locked_tag===tag){lockedUntil=Date.now()+3000; mascot.classList.add('shake');setTimeout(()=>mascot.classList.remove('shake'),300)}
+  if(s.locked_tag===tag){lockedUntil=Date.now()+3000; mascot.classList.add('jelly');setTimeout(()=>mascot.classList.remove('jelly'),400)}
   updateFeed(s.last5||[])
   render()
 }).subscribe()
